@@ -70,25 +70,48 @@ def judge_batu(board):
     else:
         return True
 
+#関数が置けるか判定する関数
+def judge_possible(board,i,n):
+    
+    if (board.iloc[i, n] == "〇") or (board.iloc[i, n] == "×"):
+        return False
+    else:
+        return True
 
 def main():
     board = make_board()
     print(board)
-    while (True == judge_maru(board)) and (True == judge_batu(board)):
-        place_piece_maru(board)
-        print(board)
-        place_piece_batu(board)
-        new_board = pd.read_csv("renew_board.csv")
-        print(new_board)
-    else:
-        print("one of them win")
+   
+    while True:
+        i = int(input("行を選択してください（0-2）: "))
+        n = int(input("列を選択してください（0-2）: "))
+        
+        if judge_possible(board,i,n):
+            place_piece_maru(board,i,n)
+            display_board(board)
+            if judge_maru(board):
+                i = int(input("行を選択してください（0-2）: "))
+                n = int(input("列を選択してください（0-2）: "))
+                
+                while not judge_possible(board,i, n):
+                    print("そこには置けないので別の場所を指定してください")
+                    i = int(input("行を選択してください（0-2）: "))
+                    n = int(input("列を選択してください（0-2）: "))
 
+                place_piece_batu(board, i, n)
+                display_board(board)
 
-
+                if not judge_batu(board):
+                    print("バツの勝ちです")
+                    break
+            else:
+                print("〇の勝ちです")
+                break
+        else:
+            print("そこには置けないので別の場所を指定してください")
 
 if __name__ == "__main__":
     main()
-
 
 
 
